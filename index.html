@@ -1,476 +1,438 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIP | Process Navigator</title>
 
-  <title>SIP Manufacturing | P2P Navigator</title>
-
-  <style>
-    :root {
-      --primary: #2563eb;
-      --background: #f8fafc;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text: #0f172a;
-      --muted: #64748b;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 24px;
-      font-family: Inter, -apple-system,
-        BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--background);
-      color: var(--text);
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .header {
-      margin-bottom: 24px;
-    }
-
-    .header h1 {
-      font-size: 22px;
-      margin: 0 0 8px;
-    }
-
-    .header p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .flow-container {
-      overflow-x: auto;
-      padding: 24px 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-    }
-
-    .flow {
-      display: flex;
-      align-items: center;
-      width: max-content;
-      min-width: 100%;
-    }
-
-    .process {
-      width: 175px;
-      min-height: 105px;
-      padding: 16px;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      background: white;
-      cursor: pointer;
-      text-align: left;
-      transition: 0.2s ease;
-      font: inherit;
-      color: inherit;
-    }
-
-    .process:hover {
-      border-color: var(--primary);
-      transform: translateY(-3px);
-      box-shadow: 0 6px 18px rgba(37,99,235,.12);
-    }
-
-    .process.active {
-      background: #eff6ff;
-      border-color: var(--primary);
-    }
-
-    .process-number {
-      font-size: 11px;
-      color: var(--primary);
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .process-title {
-      font-size: 14px;
-      font-weight: 650;
-      line-height: 1.4;
-    }
-
-    .process-dept {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .arrow {
-      width: 40px;
-      height: 2px;
-      background: #94a3b8;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .arrow::after {
-      content: "";
-      position: absolute;
-      right: 0;
-      top: -5px;
-      border-left: 8px solid #94a3b8;
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-    }
-
-    .details {
-      margin-top: 20px;
-      padding: 24px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: white;
-    }
-
-    .details h2 {
-      font-size: 19px;
-      margin: 0 0 12px;
-    }
-
-    .details p {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #475569;
-    }
-
-    .metadata {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 16px 0;
-    }
-
-    .tag {
-      background: #f1f5f9;
-      padding: 7px 11px;
-      border-radius: 7px;
-      font-size: 12px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    .btn {
-      padding: 10px 16px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: white;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      color: var(--text);
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: white;
-    }
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .hint {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 12px;
-    }
-
-    @media (max-width: 600px) {
-      body {
-        padding: 12px;
-      }
-
-      .header h1 {
-        font-size: 18px;
-      }
-
-      .process {
-        width: 155px;
-      }
-
-      .details {
-        padding: 16px;
-      }
-    }
-  </style>
+<style>
+:root {
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  color: #17243b;
+  background: #f7f9fc;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 18px; }
+.shell { max-width: 1250px; margin: auto; }
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+h1 { font-size: 21px; margin: 0 0 5px; }
+.sub { color: #64748b; font-size: 13px; margin: 0 0 16px; }
+.pill {
+  font-size: 12px;
+  border: 1px solid #dbe4ef;
+  padding: 7px 11px;
+  border-radius: 20px;
+  background: #fff;
+}
+.viewport {
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #dce4ef;
+  border-radius: 14px;
+  padding: 22px 18px;
+  scroll-behavior: smooth;
+}
+.graph {
+  width: max-content;
+  min-width: 100%;
+  display: flex;
+  align-items: center;
+}
+.node {
+  flex: none;
+  width: 172px;
+  min-height: 113px;
+  text-align: left;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  border-radius: 11px;
+  padding: 14px;
+  cursor: pointer;
+  color: inherit;
+  transition: .15s;
+  font: inherit;
+}
+.node:hover, .node:focus-visible {
+  border-color: #2563eb;
+  box-shadow: 0 3px 15px #2563eb22;
+  outline: none;
+}
+.node.active {
+  border: 2px solid #2563eb;
+  background: #eff6ff;
+}
+.num {
+  font-size: 11px;
+  color: #2563eb;
+  font-weight: 750;
+}
+.name {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-top: 8px;
+}
+.dept {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 7px;
+}
+.arrow {
+  width: 36px;
+  height: 2px;
+  background: #9aaac0;
+  position: relative;
+  flex: none;
+}
+.arrow:after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -5px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid #9aaac0;
+}
+.panel {
+  margin-top: 14px;
+  border: 1px solid #dce4ef;
+  border-radius: 14px;
+  background: #fff;
+  padding: 22px;
+}
+.panel h2 { font-size: 19px; margin: 0 0 8px; }
+.desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #475569;
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.chip {
+  font-size: 12px;
+  background: #f1f5f9;
+  border-radius: 7px;
+  padding: 7px 10px;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #17243b;
+  text-decoration: none;
+}
+.btn.primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+.btn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+.hint {
+  font-size: 12px;
+  color: #64748b;
+  margin: 13px 0 0;
+}
+.branch {
+  margin-top: 15px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 9px;
+  font-size: 12px;
+  color: #475569;
+}
+.toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+@media(max-width:600px) {
+  body { padding: 10px; }
+  .node { width: 154px; }
+  .panel { padding: 16px; }
+  .viewport { padding: 16px 10px; }
+}
+</style>
 </head>
 
 <body>
-  <main class="container">
-
-    <header class="header">
+<main class="shell">
+  <div class="top">
+    <div>
       <h1>SIP Components Manufacturing</h1>
-      <p>
-        Procure to Pay (P2P) |
-        Interactive Process Navigator
+      <p class="sub">
+        Procure to Pay (P2P) · Interactive Process Navigator
       </p>
-    </header>
+    </div>
+    <span class="pill">Level 1 · Prototype</span>
+  </div>
 
-    <section class="flow-container"
-             aria-label="P2P process flow">
-      <div class="flow" id="processFlow"></div>
-    </section>
+  <div class="toolbar">
+    <button class="btn" id="start">⟵ Start</button>
+    <span class="pill" id="counter">Step 1 of 8</span>
+  </div>
 
-    <section class="details" id="details"
-             aria-live="polite"></section>
+  <div class="viewport" id="viewport"
+       aria-label="Scrollable process diagram">
+    <div class="graph" id="graph"></div>
+  </div>
 
-  </main>
+  <section class="panel" aria-live="polite" id="panel"></section>
+</main>
 
-  <script>
-    /*
-      Replace notionUrl with the actual
-      Notion page URL for each process.
-    */
+<script>
+// Replace notionUrl with the actual Notion page link.
+// This is a public navigation catalogue, not the master database.
 
-    const processes = [
-      {
-        id: "requirement",
-        title: "Material Requirement",
-        department: "Production Planning",
-        tcode: "MD04",
-        description:
-          "Identify raw material requirements " +
-          "based on production demand and stock.",
-        notionUrl: ""
-      },
-      {
-        id: "requisition",
-        title: "Purchase Requisition",
-        department: "Procurement",
-        tcode: "ME51N",
-        description:
-          "Create an internal request to procure " +
-          "materials or services.",
-        notionUrl: ""
-      },
-      {
-        id: "quotation",
-        title: "RFQ & Quotation Comparison",
-        department: "Purchasing",
-        tcode: "ME41 / ME49",
-        description:
-          "Request supplier quotations and " +
-          "compare commercial offers.",
-        notionUrl: ""
-      },
-      {
-        id: "purchase-order",
-        title: "Purchase Order",
-        department: "Purchasing",
-        tcode: "ME21N",
-        description:
-          "Create the formal purchase order " +
-          "for the selected supplier.",
-        notionUrl: ""
-      },
-      {
-        id: "goods-receipt",
-        title: "Goods Receipt",
-        department: "Stores",
-        tcode: "MIGO",
-        description:
-          "Record receipt of materials against " +
-          "the purchase order.",
-        notionUrl: ""
-      },
-      {
-        id: "quality",
-        title: "Quality Inspection",
-        department: "Quality",
-        tcode: "QA32",
-        description:
-          "Inspect received materials and " +
-          "record quality decisions.",
-        notionUrl: ""
-      },
-      {
-        id: "invoice",
-        title: "Invoice Verification",
-        department: "Finance",
-        tcode: "MIRO",
-        description:
-          "Verify the supplier invoice against " +
-          "the purchase order and goods receipt.",
-        notionUrl: ""
-      },
-      {
-        id: "payment",
-        title: "Vendor Payment",
-        department: "Finance",
-        tcode: "F110",
-        description:
-          "Process payment of approved " +
-          "supplier invoices.",
-        notionUrl: ""
-      }
-    ];
+const processes = [
+  {
+    id: 'requirement',
+    name: 'Material Requirement',
+    department: 'Production Planning',
+    sap: 'MD04',
+    description: 'Identify material needs from demand, inventory and planning.',
+    notionUrl: '',
+    related: ['requisition']
+  },
+  {
+    id: 'requisition',
+    name: 'Purchase Requisition',
+    department: 'Procurement',
+    sap: 'ME51N',
+    description: 'Request procurement of required materials or services.',
+    notionUrl: '',
+    related: ['quotation', 'purchase-order']
+  },
+  {
+    id: 'quotation',
+    name: 'RFQ & Quotation Comparison',
+    department: 'Purchasing',
+    sap: 'ME41 / ME49',
+    description: 'Invite supplier quotations and compare offers when sourcing requires it.',
+    notionUrl: '',
+    related: ['purchase-order']
+  },
+  {
+    id: 'purchase-order',
+    name: 'Purchase Order',
+    department: 'Purchasing',
+    sap: 'ME21N',
+    description: 'Issue the approved purchase commitment to a supplier.',
+    notionUrl: '',
+    related: ['goods-receipt', 'invoice']
+  },
+  {
+    id: 'goods-receipt',
+    name: 'Goods Receipt',
+    department: 'Stores',
+    sap: 'MIGO',
+    description: 'Record physical receipt against the purchase order.',
+    notionUrl: '',
+    related: ['quality', 'invoice']
+  },
+  {
+    id: 'quality',
+    name: 'Quality Inspection',
+    department: 'Quality',
+    sap: 'QA32',
+    description: 'Where applicable, inspect received materials and record the usage decision.',
+    notionUrl: '',
+    related: ['invoice']
+  },
+  {
+    id: 'invoice',
+    name: 'Invoice Verification',
+    department: 'Finance',
+    sap: 'MIRO',
+    description: 'Check supplier invoice against purchasing and receipt information.',
+    notionUrl: '',
+    related: ['payment']
+  },
+  {
+    id: 'payment',
+    name: 'Vendor Payment',
+    department: 'Finance',
+    sap: 'F110',
+    description: 'Process eligible vendor payments according to payment terms.',
+    notionUrl: '',
+    related: []
+  }
+];
 
-    let activeIndex = 0;
+let active = 0;
 
-    const flowElement =
-      document.getElementById("processFlow");
+const graph = document.getElementById('graph');
+const panel = document.getElementById('panel');
+const viewport = document.getElementById('viewport');
 
-    const detailsElement =
-      document.getElementById("details");
+function el(tag, cls, content) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (content !== undefined) e.textContent = content;
+  return e;
+}
 
-    function renderFlow() {
-      flowElement.innerHTML = "";
+function renderGraph() {
+  graph.replaceChildren();
 
-      processes.forEach((process, index) => {
-
-        if (index > 0) {
-          const arrow =
-            document.createElement("div");
-          arrow.className = "arrow";
-          arrow.setAttribute(
-            "aria-hidden", "true"
-          );
-          flowElement.appendChild(arrow);
-        }
-
-        const button =
-          document.createElement("button");
-
-        button.className =
-          "process" +
-          (index === activeIndex ? " active" : "");
-
-        button.type = "button";
-        button.setAttribute(
-          "aria-pressed",
-          String(index === activeIndex)
-        );
-
-        const number =
-          document.createElement("div");
-        number.className = "process-number";
-        number.textContent =
-          "STEP " + String(index + 1).padStart(2, "0");
-
-        const title =
-          document.createElement("div");
-        title.className = "process-title";
-        title.textContent = process.title;
-
-        const dept =
-          document.createElement("div");
-        dept.className = "process-dept";
-        dept.textContent = process.department;
-
-        button.append(number, title, dept);
-
-        button.addEventListener("click", () => {
-          selectProcess(index);
-        });
-
-        flowElement.appendChild(button);
-      });
+  processes.forEach((p, i) => {
+    if (i) {
+      const arrow = el('div', 'arrow');
+      arrow.setAttribute('aria-hidden', 'true');
+      graph.append(arrow);
     }
 
-    function selectProcess(index) {
-      activeIndex = index;
-      renderFlow();
-      renderDetails();
-    }
+    const button = el(
+      'button',
+      'node' + (i === active ? ' active' : '')
+    );
 
-    function renderDetails() {
-      const process = processes[activeIndex];
+    button.type = 'button';
+    button.dataset.index = i;
+    button.setAttribute('aria-pressed', String(i === active));
 
-      detailsElement.innerHTML = "";
+    button.append(
+      el('div', 'num', 'STEP ' + String(i + 1).padStart(2, '0')),
+      el('div', 'name', p.name),
+      el('div', 'dept', p.department)
+    );
 
-      const heading = document.createElement("h2");
-      heading.textContent = process.title;
+    button.onclick = () => select(i);
+    graph.append(button);
+  });
+}
 
-      const description = document.createElement("p");
-      description.textContent = process.description;
+function renderPanel() {
+  const p = processes[active];
+  panel.replaceChildren();
 
-      const metadata = document.createElement("div");
-      metadata.className = "metadata";
+  panel.append(
+    el('h2', '', p.name),
+    el('p', 'desc', p.description)
+  );
 
-      const department = document.createElement("span");
-      department.className = "tag";
-      department.textContent =
-        "Department: " + process.department;
+  const chips = el('div', 'chips');
 
-      const transaction = document.createElement("span");
-      transaction.className = "tag";
-      transaction.textContent =
-        "SAP: " + process.tcode;
+  chips.append(
+    el('span', 'chip', 'Department: ' + p.department),
+    el('span', 'chip', 'SAP: ' + p.sap)
+  );
 
-      metadata.append(department, transaction);
+  panel.append(chips);
 
-      const actions = document.createElement("div");
-      actions.className = "actions";
+  const actions = el('div', 'actions');
 
-      const previous = document.createElement("button");
-      previous.className = "btn";
-      previous.textContent = "← Previous";
-      previous.disabled = activeIndex === 0;
-      previous.addEventListener("click", () => {
-        selectProcess(activeIndex - 1);
-      });
+  const previous = el('button', 'btn', '← Previous');
+  previous.disabled = active === 0;
+  previous.onclick = () => select(active - 1);
+  actions.append(previous);
 
-      const next = document.createElement("button");
-      next.className = "btn";
-      next.textContent = "Next →";
-      next.disabled = activeIndex === processes.length - 1;
-      next.addEventListener("click", () => {
-        selectProcess(activeIndex + 1);
-      });
+  if (p.notionUrl) {
+    const link = el(
+      'a',
+      'btn primary',
+      'Open Notion Process ↗'
+    );
 
-      actions.appendChild(previous);
+    link.href = p.notionUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    actions.append(link);
+  }
 
-      if (process.notionUrl) {
-        const link = document.createElement("a");
-        link.className = "btn btn-primary";
-        link.href = process.notionUrl;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.textContent = "Open Notion Process ↗";
-        actions.appendChild(link);
-      }
+  const next = el('button', 'btn', 'Next →');
+  next.disabled = active === processes.length - 1;
+  next.onclick = () => select(active + 1);
+  actions.append(next);
 
-      actions.appendChild(next);
+  panel.append(actions);
 
-      detailsElement.append(
-        heading,
-        description,
-        metadata,
-        actions
-      );
+  if (!p.notionUrl) {
+    panel.append(
+      el(
+        'p',
+        'hint',
+        'Add this process’s Notion URL in the processes array to enable its page link.'
+      )
+    );
+  }
 
-      if (!process.notionUrl) {
-        const hint = document.createElement("p");
-        hint.className = "hint";
-        hint.textContent =
-          "Notion page link has not been configured yet.";
-        detailsElement.appendChild(hint);
-      }
-    }
+  if (p.related.length) {
+    const related = el('div', 'branch');
+    related.append(el('strong', '', 'Related process links: '));
 
-    renderFlow();
-    renderDetails();
-  </script>
+    p.related.forEach(id => {
+      const index = processes.findIndex(x => x.id === id);
+      if (index < 0) return;
+
+      const button = el('button', 'btn', processes[index].name);
+      button.style.margin = '5px';
+      button.onclick = () => select(index);
+
+      related.append(button);
+    });
+
+    panel.append(related);
+  }
+
+  document.getElementById('counter').textContent =
+    'Step ' + (active + 1) + ' of ' + processes.length;
+}
+
+function select(index) {
+  if (index < 0 || index >= processes.length) return;
+
+  active = index;
+  renderGraph();
+  renderPanel();
+
+  const node = graph.querySelector(
+    '[data-index="' + index + '"]'
+  );
+
+  if (node) {
+    const target =
+      node.offsetLeft +
+      node.offsetWidth / 2 -
+      viewport.clientWidth / 2;
+
+    viewport.scrollTo({
+      left: Math.max(0, target),
+      behavior: 'smooth'
+    });
+  }
+}
+
+document.getElementById('start').onclick = () => select(0);
+
+renderGraph();
+renderPanel();
+</script>
 </body>
 </html>
